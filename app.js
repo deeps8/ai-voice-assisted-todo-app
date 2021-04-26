@@ -49,14 +49,17 @@ app.use('/alan-user',userRoute);
 app.use('/alan-todo',taskRoute);
 
 
-//6. redirecting the file to index.html
-app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname,'public')));
 
-app.get("*",(req,res,next)=>{
-    res.sendFile(path.join(__dirname,"public/index.html"));
+app.get('*',(req,res)=>{
+    res.sendFile(path.join(__dirname,'public/index.html'));
 });
 
-
+// app.use((req,res,next)=>{
+//     return res.json({
+//         message:"Not found in routes"
+//     })
+// });
 
 app.use((err,req,res,next)=>{
     res.status(err.status || 500);
@@ -67,11 +70,9 @@ app.use((err,req,res,next)=>{
     });
 });
 
-
-//7. listen to the port by express
-app.listen(port,()=>{
-    console.log("Express server is listening on port "+port);
-});
+app.listen(process.env.PORT || 8080, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+  });
 
 module.exports = app;
 
