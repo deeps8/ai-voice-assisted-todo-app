@@ -3,7 +3,6 @@ const express =  require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const  jwt = require('jsonwebtoken');
-const  bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 
@@ -26,8 +25,7 @@ router.post('/login',(req,res,next)=>{
         .then(user=>{
             if(user!=null){
                 //comapring password
-                bcrypt.compare(req.body.password,user.password).then(result=>{
-                    if(result){
+                    if(req.body.password === user.password){
                         const token = jwt.sign({
                             username: user.username,
                             uid: user.uid
@@ -50,7 +48,6 @@ router.post('/login',(req,res,next)=>{
                             result: result
                         });
                     }
-                });
             }else{
                 res.status(404);
                 return res.json({
@@ -87,19 +84,10 @@ router.post('/signup',(req,res,next)=>{
             //no user with same email then add the user in collection
             if(userCount==0){
                 //now crypt the password from body
-                bcrypt.hash(req.body.password,10,(err,hash)=>{
-
-                    if(err){
-                        res.status(400);
-                        return res.json({
-                            message: "Error in paswword encryption",
-                            error: err
-                        });
-                    }else{
                         const user = new User({
                             uid: new mongoose.Types.ObjectId(),
                             username: req.body.username,
-                            password:hash
+                            password:req.body.password
                         }); 
                         
                         user.save()
@@ -116,8 +104,6 @@ router.post('/signup',(req,res,next)=>{
                                     error: error
                                 });
                             });
-                    }  
-                });
                 
             }
             //if email already exists
