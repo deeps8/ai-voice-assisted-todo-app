@@ -20,13 +20,15 @@ const User = require('../models/user');
 */
 router.post('/login',(req,res,next)=>{
     
-    User.findOne({username:req.body.username})
-        .exec()
+    User.findOne({username:req.body.username}).exec()
         .then(user=>{
+            // console.log(user);
             if(user!=null){
                 //comapring password
-                    if(req.body.password === user.password){
-                        const token = jwt.sign({
+                // console.log(req.body.password == user.password, req.body.password , user.password);
+                    if(req.body.password == user.password){
+                        
+                        var token = jwt.sign({
                             username: user.username,
                             uid: user.uid
                         },
@@ -35,9 +37,11 @@ router.post('/login',(req,res,next)=>{
                             expiresIn: '7d'
                         });
 
+                        // console.log(token);
+
+                        res.status(200);
                         return res.json({
                             message: "Authentication Successful",
-                            result: result,
                             token:token,
                             user:user
                         });
@@ -45,7 +49,7 @@ router.post('/login',(req,res,next)=>{
                         res.status(400);
                         return res.json({
                             message: 'Authentication Failed',
-                            result: result
+                            
                         });
                     }
             }else{
@@ -57,6 +61,7 @@ router.post('/login',(req,res,next)=>{
             
         })
         .catch(error=>{
+            console.log("wat err",error);
             res.status(400);
             return res.json({
                 message: "Something went wrong",
