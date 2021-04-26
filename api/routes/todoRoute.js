@@ -146,7 +146,7 @@ router.post('/update/done',checkAuth,(req,res,next)=>{
 
 
 //delete the task only by owner
-router.delete('/delete',checkAuth,(req,res,next)=>{
+router.post('/delete',checkAuth,(req,res,next)=>{
     
     Tasks.deleteOne(
         { tid: req.body.tid, "user.uid": req.UserData.uid }
