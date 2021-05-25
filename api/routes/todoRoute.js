@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
+const imgbb = require('imgbb-uploader');
+const axios = require('axios');
 const Tasks = require('../models/todo');
 const checkAuth = require('../middleware/checkAuth');
 const { aggregate } = require('../models/todo');
@@ -142,6 +143,40 @@ router.post('/update/done',checkAuth,(req,res,next)=>{
         });
     });
     
+});
+
+
+router.post('/fileUpload',(req,res,next)=>{
+
+    // 6d6e4eb32de5fb42529ab14a1e912599
+    // console.log(res.body.image);
+
+    const options = {
+        apiKey: "6d6e4eb32de5fb42529ab14a1e912599", // MANDATORY
+      
+        // imagePath: "./public/assets/logout.png", // OPTIONAL (unless options.base64string is falsy)
+      
+        name: "yourCustomFilename", // OPTIONAL: pass a custom filename to imgBB API
+      
+        base64string:req.body.image
+    }
+    
+    imgbb(options)
+    .then(response=>{
+        // console.log(res);
+        return res.json({
+            message:"Uploaded",
+            result: response
+        });
+    })
+    .catch(error=>{
+        res.status(400);
+        return res.json({
+            message: "not uploaded",
+            error: error
+        });
+    });
+
 });
 
 

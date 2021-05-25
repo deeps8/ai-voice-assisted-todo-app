@@ -32,10 +32,7 @@ router.post('/login',(req,res,next)=>{
                             username: user.username,
                             uid: user.uid
                         },
-                        'mysecretjwtstringfortodoapp',
-                        {
-                            expiresIn: '7d'
-                        });
+                        'mysecretjwtstringfortodoapp');
 
                         // console.log(token);
 
